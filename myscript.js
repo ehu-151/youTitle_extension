@@ -5,7 +5,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   var strUrl = String(tab.url);
   //通知の生成
   //statusがcompleteになった時に通知
-  if (changeInfo.status == "complete" && strUrl.indexOf("watch?v=") !== -1) {
+  if (changeInfo.status == "complete" && isYoutubeTrack(strUrl)) {
     var thumbnailUrl = getThumbnailUrl(strUrl);
     var pageTitle= tab.title;
     //ページタイトルの余分な部分(末尾の" - Youtube")を削除する
@@ -14,6 +14,10 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     creatNotification(thumbnailUrl,pageTitle);
   }
 });
+
+function isYoutubeTrack(url) {
+  return (url.indexOf("youtube.com") !== -1) && (url.indexOf("watch?v=") !== -1)
+}
 
 //通知番号
 function getNotificationId() {
