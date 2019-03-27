@@ -1,8 +1,8 @@
 {
-    "name": "Youtube Title",
+    "name": "YouTitle",
     "manifest_version": 2,
-    "version": "1.0",
-    "description": "Youtubeでタイトルをポップアップで表示する",
+    "version": "1.1",
+    "description": "Youtubeでタイトルを通知する拡張機能",
 
     "permissions": [
         "http://i.ytimg.com/vi/*",

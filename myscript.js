@@ -1,24 +1,19 @@
 //通知の設定
-
 //ページリーロード時に通知をする
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-    //ページのURLを取得
-    var strUrl = String(tab.url);
+  //ページのURLを取得
+  var strUrl = String(tab.url);
+  //通知の生成
+  //statusがcompleteになった時に通知
+  if (changeInfo.status == "complete" && strUrl.indexOf("watch?v=") !== -1) {
     var thumbnailUrl = getThumbnailUrl(strUrl);
-    //通知の生成
-    //yotubeの音楽が再生されるときに生成
-    if (changeInfo.title !== undefined && strUrl.indexOf("watch?v=") !== -1) {
-        var pageTitle= changeInfo.title;
-        //ページタイトルの余分な部分(末尾の" - Youtube")を削除する
-        pageTitle=pageTitle.substr( 0, pageTitle.length-10);
-        //生成
-        creatNotification(thumbnailUrl,pageTitle);
-    }
+    var pageTitle= tab.title;
+    //ページタイトルの余分な部分(末尾の" - Youtube")を削除する
+    pageTitle=pageTitle.substr( 0, pageTitle.length-10);
+    //通知開始
+    creatNotification(thumbnailUrl,pageTitle);
+  }
 });
-
-
-
-//関数
 
 //通知番号
 function getNotificationId() {
@@ -30,14 +25,16 @@ function getNotificationId() {
 //通知の内容
 //表示：タイトル、サムネイル画像
 function creatNotification(thumbnailUrl, pageTitle){
-      chrome.notifications.create(getNotificationId(), {
+      chrome.notifications.create(
+        getNotificationId(),
+        {
           type : 'basic',
           iconUrl : thumbnailUrl,
           title : pageTitle,
-          message : 'メッセージ'
-              }
-                                   , function(){})
-      console.log(numAudible);
+          message : 'YouTitleの通知',
+          silent : true,
+        },
+        function(){})
 }
 
 //URLから動画IDを取得し、サムネイル画像のURLを返す関数
@@ -52,8 +49,8 @@ function getThumbnailUrl(strUrl){
   //動画IDの切り抜き
   var movieID = strUrl.substring(32 , lastMovieIdUrl);
   //サムネイル画像のURLの作成
-  //例：http://i.ytimg.com/vi/動画ID/1.jpg
-  var thumbnailUrl = "http://i.ytimg.com/vi/" + movieID + "/1.jpg";
+  //Youtube標準のサムネイル画像を指定
+  var thumbnailUrl = "http://i.ytimg.com/vi/" + movieID + "/default.jpg";
 
   return thumbnailUrl;
 }
